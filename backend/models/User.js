@@ -22,6 +22,5 @@ const userSchema = new Schema({
 });
 
 const User = mongooes.model('User', userSchema);
-User.createIndexes();
 
 module.exports  = User
