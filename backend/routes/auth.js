@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User.js');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const JWT_SEC = 'YOyohoneySing#'
 
 
 router.post('/createuser', [body('name', 'Enter an valid name').isLength({ min: 3 }),
@@ -20,15 +24,24 @@ body('password', 'Enter an valid password').isLength({ min: 5 }),], async (req, 
     if (user) {
       return res.status(400).send('Sorry that user already exists');
     }
-    else {
-      // Create a new user
-      user = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-      })
+
+    const secPassword = await bcrypt.hash(req.body.password, 10);
+    // Create a new user
+    user = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: secPassword
+    })
+
+    const data = {
+      user: {
+        id: user.id
+      }
     }
-    res.json(user);
+
+    const authToken = jwt.sign(data, JWT_SEC)
+    res.json({ authToken })
+
   }
   catch (error) {
     console.log(error.message);
