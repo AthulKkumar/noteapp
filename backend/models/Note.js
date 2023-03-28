@@ -1,6 +1,12 @@
 const mongooes = require('mongoose');
+const { Schema } = mongooes;
+
 
 const noteSchema = new Schema({
+    user: {
+        type: mongooes.Schema.Types.ObjectId, //Act as an foreign key
+        ref: 'user'
+    },
     title: {
         type: String,
     },
@@ -19,4 +25,6 @@ const noteSchema = new Schema({
 
 });
 
-module.exports = User = mongoose.model('note', noteSchema);
+const Note =  mongooes.model('Note', noteSchema);
+
+module.exports = Note;

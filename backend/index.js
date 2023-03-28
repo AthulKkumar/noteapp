@@ -8,6 +8,8 @@ const port = 5000
 app.use(express.json());
 
 app.use('/', require('./routes/auth.js'));
+app.use('/notes', require('./routes/notes.js'));
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
