@@ -19,13 +19,13 @@ const Notes = () => {
 
     const updateNote = (currentNote) => {
         ref.current.click()
-        console.log(currentNote);
+        // console.log(currentNote);
         setNote({id:currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag })
     }
 
     const handleClick = (e)=>{
         // console.log(note);
-        editNote(note.id, note.title, note.description, note.tag)
+        editNote(note.id, note.etitle, note.edescription, note.etag)
         refClose.current.click()
     }
 
@@ -55,12 +55,12 @@ const Notes = () => {
                             <form>
                                 <div className="mb-3">
                                     <label htmlFor="etitle" className="form-label">Title</label>
-                                    <input type="text" className="form-control" id="etitle" value={note.etitle} name='etitle' onChange={onChanged} aria-describedby="emailHelp" />
+                                    <input type="text" className="form-control" id="etitle" value={note.etitle} minLength={5} required name='etitle' onChange={onChanged} aria-describedby="emailHelp" />
                                     <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="edescription" className="form-label">Description</label>
-                                    <input type="text" className="form-control" id="edescription" value={note.edescription}  onChange={onChanged} name='edescription' />
+                                    <input type="text" className="form-control" id="edescription" value={note.edescription} minLength={5} required  onChange={onChanged} name='edescription' />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="etag" className="form-label">Tag</label>
@@ -71,13 +71,16 @@ const Notes = () => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" ref={refClose} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" onClick={handleClick} className="btn btn-primary">Save changes</button>
+                            <button disabled={note.etitle.length <5 || note.edescription.length <5} type="button" onClick={handleClick} className="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div className='row my-3'>
                 <h2>Your Note</h2>
+                <div className='conatainer'>
+                    {notes.length === 0 && 'No Notes '}
+                </div>
                 {notes.map((note, index) => {
                     // console.log(note);
                     return <Noteitem key={index} updateNote={updateNote} note={note} />

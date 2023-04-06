@@ -38,15 +38,7 @@ const NoteState = (props) => {
             body: JSON.stringify({title, description, tag}), // body data type must match "Content-Type" header
         });
 
-        const note = {
-            "_id": "642531f77afae923bd52e58f",
-            "user": "641f03d7a941b9e1e8838997",
-            "title": title,
-            "description": description,
-            "tag": tag,
-            "date": "2023-03-30T06:53:43.093Z",
-            "__v": 0
-        }
+        const note = await response.json()
 
         setNote(notes.concat(note))
     }
@@ -83,12 +75,13 @@ const NoteState = (props) => {
         // console.log(json);
 
         let newNotes = JSON.parse(JSON.stringify(notes))
+        // console.log(newNotes);
         for (let index = 0; index < notes.length; index++) {
-            const element = notes[index];
+            const element = newNotes[index];
             if (element._id === id) {
-                notes[index].title = title;
-                notes[index].description = description;
-                notes[index].tag = tag;
+                newNotes[index].title = title;
+                newNotes[index].description = description;
+                newNotes[index].tag = tag;
                 break;
             }
 
