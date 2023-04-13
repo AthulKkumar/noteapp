@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 
 
-const Signup = () => {
+const Signup = (props) => {
 
   const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" })
   const navigate = useNavigate()
@@ -22,9 +22,11 @@ const Signup = () => {
     if (json.success) {
       localStorage.setItem('token', json.authtoken)
       navigate("/")
+      props.showAlert("Account Created Successfully", "success")
+
     }
     else {
-      alert('Invalid crediantials')
+      props.showAlert("Invalid credinatials", "danger")
     }
   }
 
