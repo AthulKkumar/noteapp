@@ -12,10 +12,12 @@ const JWT_SEC = 'YOyohoneySing#'
 router.post('/createuser', [body('name', 'Enter an valid name').isLength({ min: 3 }),
 body('email', 'Enter an valid email').isEmail(),
 body('password', 'Enter an valid password').isLength({ min: 5 }),], async (req, res) => {
+
+  let  success = false;
   // If there are errors, return Bad request and the errors 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ success, errors: errors.array() });
   }
 
   try {
@@ -23,7 +25,7 @@ body('password', 'Enter an valid password').isLength({ min: 5 }),], async (req, 
     // Check whether the email exists already
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).send('Sorry that user already exists');
+      return res.status(400).send({ success, error: 'Sorry that user already exists'});
     }
 
     const secPassword = await bcrypt.hash(req.body.password, 10);
@@ -41,7 +43,8 @@ body('password', 'Enter an valid password').isLength({ min: 5 }),], async (req, 
     }
 
     const authToken = jwt.sign(data, JWT_SEC)
-    res.json({ authToken })
+    success = true;
+    res.json({ success, authToken })
 
   }
   catch (error) {
@@ -56,6 +59,7 @@ router.post('/login', [
   body('email', 'Enter an valid email').isEmail(),
   body('password', 'Password cannot be blank').exists()], async (req, res) => {
 
+    let success = false
     // If there are errors, return Bad request and the errors 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -66,12 +70,12 @@ router.post('/login', [
 
       let user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: "Please try to login with correct credentials" });
+        return res.status(400).json({ success, error: "Please try to login with correct credentials" });
       }
 
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res.status(400).json({ error: "Please try to login with correct credentials" });
+        return res.status(400).json({success, error: "Please try to login with correct credentials" });
       }
 
       const data = {
@@ -80,8 +84,9 @@ router.post('/login', [
         }
       }
 
+      success = true
       const authToken = jwt.sign(data, JWT_SEC)
-      res.json({ authToken })
+      res.json({success, authToken })
 
     } catch (error) {
       console.log(error.message);
